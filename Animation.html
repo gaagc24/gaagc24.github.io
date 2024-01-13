@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Layout Sync</title>
+  <style type="text/css">
+    #control span {
+      display: inline-block;
+      width: 4em;
+    }
+    #control input, #control button {
+      width: 5em;
+    }
+  </style>
+</head>
+<body>
+    <div><canvas id="lattice" width="400" height="200"></canvas></div>
+    <div id="control">
+      <div><span class="title">e:</span><input id="nume" value="0"></input></div>
+      <div><span class="title">t:</span><input id="numt" value="1"></input></div>
+      <div><span class="title">tt:</span><input id="numtt" value="0"></input></div>
+      <div><span class="title">s:</span><input id="nums" value="0"></input></div>
+      <div><span class="title">st:</span><input id="numst" value="0"></input></div>
+      <div><span class="title">stt:</span><input id="numstt" value="0"></input></div>
+      <div><span></span><button onclick="triggerOperation()">Apply</button></div>
+    </div>
+  <script>
+    var triggerOperation = function () {};
+    var canvas = document.getElementById('lattice');
+    var context = canvas.getContext('2d');
+      
+    var width = canvas.width;
+    var height = canvas.height;
+
+    
+      var gridSize = 200;
+      var gap = 20;
+
+      var center = {
+        x: width / 2,
+        y: height / 2
+      };
+
+      var points = [];
+      for (var i=-gridSize/2; i<gridSize/2; i++) {
+        for (var j=-gridSize/2; j<gridSize/2; j++) {
+          var isCenter = i == 0 && j == 0;
+          var x = (i+(j % 2)/2)*gap + center.x;
+          var y = Math.sqrt(3)/2*j*gap + center.y;
+          var size = isCenter ? 6 : 4;
+          points.push({
+            xOld: x,
+            yOld: y,
+            x: x,
+            y: y,
+            size: size,
+            edge: (j == -2 && i == 0) || (j == 1 && (i == -2 || i == 1))
+          });
+        }
+      }
+
+      var basis = {
+        e: [1, 0, 0, 1],
+        t: [-1/2, Math.sqrt(3)/2, -Math.sqrt(3)/2, -1/2],
+        tt: [-1/2, -Math.sqrt(3)/2, Math.sqrt(3)/2, -1/2],
+        s: [-1, 0, 0, 1],
+        st: [1/2, -Math.sqrt(3)/2, -Math.sqrt(3)/2, -1/2],
+        stt: [1/2, Math.sqrt(3)/2, Math.sqrt(3)/2, -1/2]
+      };
+
+      function inArea(x, y) {
+        if (x < -10 || x > width + 10) {
+          return false;
+        }
+        if (y < -10 || y > height + 10) {
+          return false;
+        }
+      }
+
+      function operate(op) {
+        var a11 = op[0];
+        var a12 = op[1];
+        var a21 = op[2];
+        var a22 = op[3];
+        points = points.map(function (p) {
+          var xNew = a11*(p.x-center.x) + a21 * (p.y-center.y) + center.x;
+          var yNew = a12*(p.x-center.x) + a22 * (p.y-center.y) + center.y;
+          var needsAnimation = inArea(p.x, p.y) || inArea(xNew, yNew);
+          return {
+            xOld: p.x,
+            yOld: p.y,
+            x: xNew,
+            y: yNew,
+            size: p.size,
+            edge: p.edge
+          };
+        })
+      }
+
+      function toMatrix(coeff) {
+        var op = [];
+        for (var i=0; i<4; i++) {
+          var number = 0;
+          Object.keys(basis).forEach(function (b) {
+            number += coeff[b] ? coeff[b] * basis[b][i] : 0;
+          })
+          op.push(number);
+        }
+        return op;
+      }
+
+      triggerOperation = function () {
+        var coeff = {};
+        Object.keys(basis).forEach(function (b) {
+          var value = parseInt(document.getElementById('num' + b).value)
+          coeff[b] = value ? value : 0;
+        });
+
+        operate(toMatrix(coeff));
+        animate();
+      }
+
+    function renderPoints(ratio) {
+      // draw background
+      context.beginPath();
+      context.rect(0, 0, width, height);
+      context.fillStyle = "white";
+      context.fill();
+
+      // draw points
+      var edges = [];
+      points.forEach(function (p) {
+        var x = ratio*p.x + (1-ratio)*p.xOld;
+        var y = ratio*p.y + (1-ratio)*p.yOld;
+        if (p.edge) {
+          edges.push([x, y]);
+        }
+        context.beginPath();
+        context.arc(x, y, p.size, 0, 2 * Math.PI, false);
+        context.fillStyle = 'black';
+        context.fill();
+      });
+
+      // draw edges
+      context.beginPath();
+      for (var i=0; i<edges.length; i++) {
+        if (i == 0) {
+          context.moveTo(edges[i][0], edges[i][1]);
+        } else {
+          context.lineTo(edges[i][0], edges[i][1]);
+        }
+      }
+      context.closePath();
+      context.strokeStyle = 'black';
+      context.lineWidth = 1;
+      context.stroke();
+    }
+
+    var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                            window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+    var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+
+    var startTime = undefined;
+    
+    function render() {
+      var time = Date.now();
+      if (startTime === undefined) {
+        startTime = time;
+      }
+      var elapsed = Math.min(1, (time-startTime)/1000);
+      console.log(elapsed);
+      renderPoints(elapsed);
+      if (elapsed < 1) {
+        requestAnimationFrame(render);
+      }
+    }
+
+    function animate () {
+      startTime = Date.now();
+      render();
+    }
+
+    renderPoints(1);
+  </script>
+</body>
+
+</html>
