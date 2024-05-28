@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2023.7.18)  22 MAY 2024 14:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2023.7.18)  28 MAY 2024 16:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -505,6 +505,12 @@ LaTeX Font Info:    ... okay on input line 13.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
+
+Overfull \hbox (19.39633pt too wide) in paragraph at lines 35--36
+\T1/cmr/m/n/12 the Ed-in-burgh Math-e-mat-i-cal So-ci-ety 53 (2010), pp. 787^^U
+798, doi:10.1017/S0013091509000868 
+ []
+
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./Vergani.aux) ) 
@@ -513,15 +519,15 @@ Here is how much of TeX's memory you used:
  28265 string characters out of 6134896
  91992 words of memory out of 5000000
  5971 multiletter control sequences out of 15000+600000
- 6921 words of font info for 19 fonts, out of 8000000 for 9000
+ 6829 words of font info for 19 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 27i,4n,26p,312b,132s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 27i,4n,26p,505b,132s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/sha
 re/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texmf/fonts/type1
-/public/cm-super/sfbx1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfc
-c1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr/shar
-e/texmf/fonts/type1/public/cm-super/sfrm1440.pfb>
-Output written on Vergani.pdf (1 page, 56879 bytes).
+/public/cm-super/sfcc1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfr
+m1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1440.pfb></usr/shar
+e/texmf/fonts/type1/public/cm-super/sfti1200.pfb>
+Output written on Vergani.pdf (1 page, 63547 bytes).
 PDF statistics:
  25 PDF objects out of 1000 (max. 8388607)
  17 compressed objects within 1 object stream
